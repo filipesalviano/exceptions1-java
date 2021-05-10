@@ -49,9 +49,19 @@ public class Reservation {
 		return dias;
 	}
 	
-	public void updateDates(Date checkIn, Date checkOut) {
+	public String updateDates(Date checkIn, Date checkOut) {
+		Date now = new Date();
+		if(checkIn.before(now) || checkOut.before(now)) {
+			 return "Reservation dates for update must be future dates";
+		}
+		if(!checkOut.after(checkIn)) {
+			return "Check-out date must be after check-in date";
+		}
+		
 		this.checkIn = checkIn; // o checkIn do meu objeto recebe o checkIn que veio como argumento.
 		this.checkOut = checkOut; // o checkOut do meu objeto recebe o checkOut que veio como argumento.
+		
+		return null;
 	}
 	
 	@Override
@@ -66,5 +76,4 @@ public class Reservation {
 				+ duration()
 				+ " nights";
 	}
-
 }
