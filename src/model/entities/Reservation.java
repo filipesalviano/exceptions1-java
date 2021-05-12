@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservation {
 	
 	private Integer roomNumber;
@@ -21,6 +23,12 @@ public class Reservation {
 	*/
 
 	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+		
+		// tratando (já no construtor) o caso onde o usuário digita a data de checkOut menor que a data de checkIn
+		if(!checkOut.after(checkIn)) {
+			 throw new DomainException("Check-out date must be after check-in date");
+		}
+		
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -49,19 +57,16 @@ public class Reservation {
 		return dias;
 	}
 	
-	public String updateDates(Date checkIn, Date checkOut) {
+	public void updateDates(Date checkIn, Date checkOut) {
 		Date now = new Date();
-		if(checkIn.before(now) || checkOut.before(now)) {
-			 return "Reservation dates for update must be future dates";
+		if(checkIn.before(now) || checkOut.before(now)) { // Agora, se acontecer um erro, vamos lançar uma exceção em vez de retornar alguma coisa
+			 throw new DomainException("Reservation dates for update must be future dates"); // temos que instanciar uma exceção. Vamos usar uma que já existe no java. Essa "IllegalArgumentException", usamos quando os argumentos que passamos no método, são inválidos.
 		}
 		if(!checkOut.after(checkIn)) {
-			return "Check-out date must be after check-in date";
+			 throw new DomainException("Check-out date must be after check-in date");
 		}
-		
 		this.checkIn = checkIn; // o checkIn do meu objeto recebe o checkIn que veio como argumento.
 		this.checkOut = checkOut; // o checkOut do meu objeto recebe o checkOut que veio como argumento.
-		
-		return null;
 	}
 	
 	@Override
